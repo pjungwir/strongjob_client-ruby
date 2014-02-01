@@ -27,4 +27,29 @@ describe StrongjobClient::Client do
     @result.run_id.should_not be_nil
   end
 
+
+  it "should fail a run with an exception" do
+    fake_connection do |stubs|
+      stubs.post("/v1/jobs/1/runs") do
+        [200, {}, JSON.dump({ success: { id: 5 } })]
+      end
+      stubs.post("/v1/jobs/1/runs/5/fail") do
+        [200, {}, JSON.dump({ success: { id: 9 } })]
+      end
+    end
+    allow(@client).to receive(:connection).and_return(fake_connection)
+
+    @result = @client.run('1') do |run|
+      raise "Oops!"
+    end
+    @result.errors.size.should == 1
+    @result.errors.first.message.should == "Oops!"
+    @result.errors.first.backtrace.should be_kind_of(Array)
+    @result.should_not be_finished
+    @result.should be_failed
+    @result.run_id.should_not be_nil
+  end
+
+  it "should fail a run with fail!"
+
 end

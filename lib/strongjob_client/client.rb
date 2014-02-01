@@ -11,9 +11,12 @@ module StrongjobClient
       r = ::StrongjobClient::Run.new(connection(options), job_slug)
       r.start!
 
-      yield r if block
-
-      r.finish!
+      begin
+        yield r if block
+        r.finish!
+      rescue ::Exception => e
+        r.fail!(e)
+      end
       return r.result
     end
 

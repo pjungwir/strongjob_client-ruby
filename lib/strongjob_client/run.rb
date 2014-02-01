@@ -46,7 +46,15 @@ module StrongjobClient
 
     def fail!(msg=nil, options={})
       if @run_id
-        post("/v1/jobs/#{@job}/runs/#{@run_id}/fail")
+        @errors << msg
+        args = {}
+        if msg.is_a?(Exception)
+          args[:message] = msg.message
+          args[:stack_trace] = msg.backtrace.join("\n")
+        else
+          args[:message] = msg
+        end
+        post("/v1/jobs/#{@job}/runs/#{@run_id}/fail", args)
         @done = true
         @failed = true
       end
