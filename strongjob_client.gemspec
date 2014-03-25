@@ -2,7 +2,7 @@ $:.push File.dirname(__FILE__) + '/lib'
 require 'strongjob_client/version'
 
 Gem::Specification.new do |s|
-  s.name = "strongjob-client"
+  s.name = "strongjob_client"
   s.version = StrongjobClient::VERSION
   s.date = "2014-01-24"
 
