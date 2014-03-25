@@ -6,7 +6,9 @@ module StrongjobClient
     def initialize(options={})
       @options = options
       @api_key = options[:api_key]
-      raise ArgumentError, ":api_key is required to initialize the Strongjob Client" unless @api_key
+      unless options[:noop]
+        raise ArgumentError, ":api_key is required to initialize the Strongjob Client" unless @api_key
+      end
     end
 
     def run(job_slug, options={}, &block)

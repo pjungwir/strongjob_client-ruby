@@ -39,7 +39,6 @@ module StrongjobClient
       resp = post("/v1/jobs/#{@job}/runs")
       if resp.success?
         body = resp.body
-        puts body
         @run_id = body['success']['id']
       end
     end

@@ -6,7 +6,7 @@ describe StrongjobClient::Client do
 
   before(:each) do
     @api_key = '123'
-    @client = StrongjobClient::Client.new(@api_key)
+    @client = StrongjobClient::Client.new(api_key: @api_key)
   end
 
   it "should start a new run" do
