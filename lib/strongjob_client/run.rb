@@ -74,7 +74,7 @@ module StrongjobClient
       resp = @conn.post do |req|
         req.path = path
         req.headers['Content-Type'] = 'application/json'
-        req.body = body.merge(sent_at: t.to_s)
+        req.body = body.merge(sent_at: t.strftime("%Y-%m-%dT%H:%M:%SZ")).to_json
         yield req if block
       end
       record_network_errors(path, t, resp)
