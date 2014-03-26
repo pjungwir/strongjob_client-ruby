@@ -4,16 +4,17 @@ module StrongjobClient
   class Client
 
     def initialize(options={})
+      @api_key = options.delete(:api_key)
+      @noop = options.delete(:noop)
       @options = options
-      @api_key = options[:api_key]
-      unless options[:noop]
+      unless @noop
         raise ArgumentError, ":api_key is required to initialize the Strongjob Client" unless @api_key
       end
     end
 
     def run(job_slug, options={}, &block)
       options = @options.merge(options)
-      if options[:noop]
+      if @noop || options[:noop]
         return nil
 
       else
