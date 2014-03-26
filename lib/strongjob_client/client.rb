@@ -31,12 +31,17 @@ module StrongjobClient
     end
 
     def connection(options={})
-      @conn ||= Faraday.new(url: options[:server_url] || "https://api.strongjob.com",
-                            headers: { 'Authorization' => "Token token=\"#{@api_key}\"" }) do |fdy|
+      return @conn if @conn
+
+      options = {
+        url: options.delete(:server_url) || 'https://api.strongjob.com',
+        headers: { 'Authorization' => "Token token=\"#{@api_key}\"" }.merge(options.delete(:headers) || {})
+      }.merge(options)
+
+      @conn = Faraday.new(options) do |fdy|
         fdy.response :json
         fdy.adapter Faraday.default_adapter
       end
-      
     end
 
   end
