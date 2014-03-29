@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     strongjob_client (0.1.0)
+      active_support
       faraday
       faraday_middleware
       json
@@ -9,6 +10,9 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
+    active_support (3.0.0)
+      activesupport (= 3.0.0)
+    activesupport (3.0.0)
     diff-lcs (1.2.5)
     faraday (0.8.9)
       multipart-post (~> 1.2.0)

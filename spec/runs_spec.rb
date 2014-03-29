@@ -2,7 +2,7 @@ require 'json'
 require 'faraday'
 require 'spec_helper'
 
-describe StrongjobClient::Client do
+describe StrongjobClient::Run do
 
   before(:each) do
     @api_key = '123'
@@ -51,5 +51,10 @@ describe StrongjobClient::Client do
   end
 
   it "should fail a run with fail!"
+
+  it "should do nothing with a noop parameter" do
+    @result = @client.run('1', noop: true) { }
+    @result.should be_nil
+  end
 
 end

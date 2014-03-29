@@ -1,9 +1,11 @@
 require 'faraday_middleware'
+require 'active_support/core_ext/hash/indifferent_access'
 
 module StrongjobClient
   class Client
 
     def initialize(options={})
+      options = options.with_indifferent_access
       @api_key = options.delete(:api_key)
       @noop = options.delete(:noop)
       @options = options
@@ -13,7 +15,6 @@ module StrongjobClient
     end
 
     def run(job_slug, options={}, &block)
-      options = @options.merge(options)
       if @noop || options[:noop]
         return nil
 
@@ -31,13 +32,22 @@ module StrongjobClient
       end
     end
 
-    def connection(options={})
+    private
+
+    def merge_options(options)
+      options = @options.merge({
+        headers: { 'Authorization' => "Token token=\"#{@api_key}\"" }.merge(options.delete(:headers) || {})
+      }).merge(options.with_indifferent_access)
+
+      options[:url] = options.delete(:server_url) if options[:server_url]
+      options[:url] ||= 'https://api.strongjob.com'
+      options
+    end
+
+    def connection(options)
       return @conn if @conn
 
-      options = {
-        url: options.delete(:server_url) || 'https://api.strongjob.com',
-        headers: { 'Authorization' => "Token token=\"#{@api_key}\"" }.merge(options.delete(:headers) || {})
-      }.merge(options)
+      options = merge_options(options)
 
       @conn = Faraday.new(options) do |fdy|
         fdy.response :json
