@@ -15,6 +15,8 @@ describe StrongjobClient::Client do
   end
 
   it "should initialize with an API key" do
+    StrongjobClient::Run.any_instance.should_receive :start!
+    @client = StrongjobClient::Client.new(api_key: @api_key)
     fake_connection do |stubs|
       stubs.post("/v1/jobs/1/runs") do
         [200, {}, JSON.dump({ success: { id: 5 } })]
@@ -25,8 +27,6 @@ describe StrongjobClient::Client do
     end
     allow(@client).to receive(:connection).and_return(fake_connection)
 
-    StrongjobClient::Run.any_instance.should_receive :start!
-    @client = StrongjobClient::Client.new(api_key: @api_key)
     @client.run('1') { }
   end
 
@@ -39,8 +39,6 @@ describe StrongjobClient::Client do
   it "should accept nested symbol options" do
     @client = StrongjobClient::Client.new(api_key: @api_key, ssl: { verify: false })
     @conn = @client.send(:connection, {})
-    puts @conn.instance_variables
-    puts @conn.instance_variable_get(:@ssl)
     @conn.instance_variable_get(:@ssl)[:verify].should == false
   end
 
